@@ -1,5 +1,5 @@
 aiogram==2.24
 Pyrogram==2.0.97
 TgCrypto==1.2.5
-expiringdict==1.2.2
+cachetools==5.2.1
 

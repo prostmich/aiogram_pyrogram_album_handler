@@ -4,7 +4,7 @@ from typing import List
 from aiogram import Bot, Dispatcher, types
 from aiogram.dispatcher.handler import CancelHandler
 from aiogram.dispatcher.middlewares import BaseMiddleware
-from expiringdict import ExpiringDict
+from cachetools import TTLCache
 from pyrogram import Client
 from pyrogram import types as pyro_types
 
@@ -15,7 +15,7 @@ API_HASH = "CLIENT_API_HASH"
 
 class BlockAlbumMiddleware(BaseMiddleware):
     # temporary dictionary with albums will expire in 5 seconds
-    albums: ExpiringDict = ExpiringDict(max_len=10, max_age_seconds=5, items=None)
+    albums = TTLCache(maxsize=10, ttl=5)
 
     async def on_process_message(self, message: types.Message, data: dict):
         if not message.media_group_id:
