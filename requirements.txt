@@ -1,0 +1,4 @@
+aiogram==3.0.0b6
+Pyrogram==2.0.97
+TgCrypto==1.2.5
+cachetools==5.2.1
