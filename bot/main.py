@@ -25,21 +25,26 @@ class BlockAlbumMiddleware(BaseMiddleware):
             raise CancelHandler()
         self.albums[message.media_group_id] = message.message_id
         client = message.bot.get("client")
-        data["album"] = await client.get_media_group(message.chat.id, message.message_id)
+        data["album"] = await client.get_media_group(
+            message.chat.id, message.message_id
+        )
 
 
 async def handle_albums(message: types.Message, album: List[pyro_types.Message]):
     """
     This handler will get a list of all messages in the same media group.
-    WARNING: the type of messages in the album is not "aiogram.types.Message", but "pyrogram.types.Message"
+    WARNING: the type of messages on the album is not "aiogram.types.Message", but "pyrogram.types.Message"
     """
     media_group = types.MediaGroup()
     for obj in album:
-        file_id = obj[obj.media].file_id
+        media_type = obj.media.value
+        file_id = getattr(obj, media_type).file_id
         try:
-            media_group.attach({"media": file_id, "type": obj.media})
+            media_group.attach({"media": file_id, "type": media_type})
         except ValueError:
-            return await message.answer("This type of album is not supported by aiogram.")
+            return await message.answer(
+                "This type of album is not supported by aiogram."
+            )
     await message.answer_media_group(media_group)
 
 
